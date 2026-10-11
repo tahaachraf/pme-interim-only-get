@@ -35,12 +35,16 @@ function requireRole(...roles: Role[]) {
 }
 
 export async function registerRoutes(httpServer: Server, app: Express): Promise<Server> {
+  // Derrière le proxy HTTPS d'un hébergeur : COOKIE_SECURE=true (cookie réservé à HTTPS).
+  const secureCookie = process.env.COOKIE_SECURE === "true";
+  if (secureCookie) app.set("trust proxy", 1);
+
   app.use(
     session({
       secret: process.env.SESSION_SECRET || "demo-local-secret",
       resave: false,
       saveUninitialized: false,
-      cookie: { httpOnly: true, sameSite: "lax", maxAge: 1000 * 60 * 60 * 8 },
+      cookie: { httpOnly: true, sameSite: "lax", secure: secureCookie, maxAge: 1000 * 60 * 60 * 8 },
     }),
   );
 

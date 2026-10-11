@@ -40,8 +40,10 @@ app.use((req, res, next) => {
   }
 
   const port = parseInt(process.env.PORT || "5000", 10);
-  // 127.0.0.1 : accessible uniquement depuis cette machine (pas d'exposition réseau).
-  httpServer.listen({ port, host: "127.0.0.1" }, () => {
+  // Local : 127.0.0.1 (accessible uniquement depuis cette machine).
+  // Hébergement : définir HOST=0.0.0.0 pour accepter les connexions externes.
+  const host = process.env.HOST || "127.0.0.1";
+  httpServer.listen({ port, host }, () => {
     log(`Application disponible sur http://localhost:${port}`);
   });
 })();
